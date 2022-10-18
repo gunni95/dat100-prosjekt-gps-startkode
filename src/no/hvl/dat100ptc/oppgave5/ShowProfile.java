@@ -1,11 +1,13 @@
 package no.hvl.dat100ptc.oppgave5;
 
 import easygraphics.EasyGraphics;
+
 import no.hvl.dat100ptc.TODO;
 import no.hvl.dat100ptc.oppgave1.GPSPoint;
 import no.hvl.dat100ptc.oppgave2.GPSData;
 import no.hvl.dat100ptc.oppgave2.GPSDataConverter;
 import no.hvl.dat100ptc.oppgave2.GPSDataFileReader;
+import no.hvl.dat100ptc.oppgave3.GPSUtils;
 import no.hvl.dat100ptc.oppgave4.GPSComputer;
 
 import javax.swing.JOptionPane;
@@ -42,16 +44,21 @@ public class ShowProfile extends EasyGraphics {
 	}
 
 	public void showHeightProfile(int ybase) {
+		int x = MARGIN;
 
-		// ybase indicates the position on the y-axis where the columns should start
-	
-		int x = MARGIN,y;
-
-		// TODO - START
-
-		throw new UnsupportedOperationException(TODO.method());
-	
-		// TODO - SLUTT
+		for (int i = 0; i < gpspoints.length-1; i++) {
+			int xStart = x;
+			
+			int yStart = ybase;
+			
+			int xEnd = x;
+			
+			double heightPercentageOfBar = gpspoints[i].getElevation() / GPSUtils.findMax(GPSUtils.getElevations(gpspoints));
+			int yEnd = yStart - (int)Math.abs(MAXBARHEIGHT * (int)heightPercentageOfBar);
+			
+			drawLine(xStart, yStart, xEnd, yEnd);
+			x += 3;
+		}
 	}
 
 }
