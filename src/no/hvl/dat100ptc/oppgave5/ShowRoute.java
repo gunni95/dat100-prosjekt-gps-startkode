@@ -63,17 +63,29 @@ public class ShowRoute extends EasyGraphics {
 		double minlat = GPSUtils.findMin(GPSUtils.getLatitudes(gpspoints));
 		double minlon = GPSUtils.findMin(GPSUtils.getLongitudes(gpspoints));
 
-		
-		int preX = (int)(xstep() * (gpspoints[0].getLatitude() - minlat));
-		int preY = (int)(ystep() * (gpspoints[0].getLongitude() - minlon));
+		//initialiserer start verdier som senere blir brukt som base for tegne linje fra
+		int preX = (int)(xstep() * (gpspoints[0].getLongitude() - minlon));
+		int preY = (int)(ystep() * (gpspoints[0].getLatitude() - minlat));
+		int preEle = (int)gpspoints[0].getElevation();
 		
 		
 		for (int i = 1; i < gpspoints.length; i++) {
-			int thisX = (int)(xstep() * (gpspoints[i].getLatitude() - minlat));
-			int thisY = (int)(ystep() * (gpspoints[i].getLongitude() - minlon));
+			int thisX = (int)(xstep() * (gpspoints[i].getLongitude() - minlon));
+			int thisY = (int)(ystep() * (gpspoints[i].getLatitude() - minlat));
+			int thisEle = (int)gpspoints[i].getElevation();
 			
-			drawLine(preX, preY, thisX, thisY);
-			drawCircle(thisX, thisY, 2);
+			//drawns log point on route.
+			setColor(0, 0, 0);
+			fillCircle(MARGIN + thisX, ybase - thisY, 2);
+			
+			//bytter farge avhengig av om stigning synger eller stiger.
+			if(thisEle < preEle) {
+				setColor(255, 0, 0);
+			} else {
+				setColor(0, 255, 0);
+			}
+			
+			drawLine(MARGIN + preX, ybase - preY, MARGIN + thisX, ybase - thisY);
 			
 			preX = thisX;
 			preY = thisY;

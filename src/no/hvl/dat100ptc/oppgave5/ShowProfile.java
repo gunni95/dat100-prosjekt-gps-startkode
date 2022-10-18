@@ -44,21 +44,19 @@ public class ShowProfile extends EasyGraphics {
 	}
 
 	public void showHeightProfile(int ybase) {
+		
+		double eleMax = GPSUtils.findMax(GPSUtils.getElevations(gpspoints));
+		double eleMin = GPSUtils.findMin(GPSUtils.getElevations(gpspoints));
+		
 		int x = MARGIN;
+		System.out.println(eleMax);
+		System.out.println(eleMin);
 
 		for (int i = 0; i < gpspoints.length-1; i++) {
-			int xStart = x;
-			
-			int yStart = ybase;
-			
-			int xEnd = x;
-			
-			double heightPercentageOfBar = gpspoints[i].getElevation() / GPSUtils.findMax(GPSUtils.getElevations(gpspoints));
-			int yEnd = yStart - (int)Math.abs(MAXBARHEIGHT * (int)heightPercentageOfBar);
-			
-			drawLine(xStart, yStart, xEnd, yEnd);
+			drawLine(x, ybase, x, (int)(ybase - gpspoints[i].getElevation()));
 			x += 3;
 		}
+	
 	}
 
 }

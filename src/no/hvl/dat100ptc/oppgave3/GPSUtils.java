@@ -96,7 +96,8 @@ public class GPSUtils {
 		time -= (mins * 60);
 		int secs = time;
 		
-		return String.format("%10s", String.format(("%02d" + TIMESEP + "%02d" + TIMESEP + "%02d"), hrs, mins, secs));
+		String clockString = String.format(("%02d" + TIMESEP + "%02d" + TIMESEP + "%02d"), hrs, mins, secs);
+		return String.format("%10s", clockString);
 
 	}
 	

@@ -106,7 +106,7 @@ public class GPSComputer {
 	public double kcal(double weight, int secs, double speed) {
 		// MET: Metabolic equivalent of task angir (kcal x kg-1 x h-1)
 		double met = 0;		
-		double speedmph = speed * MS * 0.6;
+		double speedmph = speed * MS;
 		
 		
 		if (speedmph > 20) {
@@ -135,7 +135,9 @@ public class GPSComputer {
 			double speed = GPSUtils.speed(gpspoints[i], gpspoints[i+1]) / 3.6;
 			int time = Math.abs(gpspoints[i +1].getTime() - gpspoints[i].getTime());
 			
-			output += kcal(weight, time, speed);
+			
+			double speedInMS = speed * 0.6;
+			output += kcal(weight, time, speedInMS);
 		}
 		
 		return output;
@@ -145,14 +147,36 @@ public class GPSComputer {
 	
 	//lagt til en egen funskjon for å simplifisere kall for å hente data siden den både skal skrives ut i terminal og skrives i java vinduet.
 	public String[] statistics() {
-		String[] stats = {
-				String.format("%-15s", "Total Time") + ":" + String.format("%15s", GPSUtils.formatTime(this.totalTime())),
-				String.format("%-15s", "Total distance") + ":" + String.format("%15s", GPSUtils.formatDouble(this.totalDistance()) + " km"),
-				String.format("%-15s", "Total elevation") + ":" + String.format("%15s", GPSUtils.formatDouble(this.totalElevation()) + " m"),
-				String.format("%-15s", "Max speed") + ":" + String.format("%15s", GPSUtils.formatDouble(this.maxSpeed()) + " km/t"),
-				String.format("%-15s", "Average speed") + ":" + String.format("%15s", GPSUtils.formatDouble(this.averageSpeed()) + " km/t"),
-				String.format("%-15s", "Energy") + ":" + String.format("%15s", GPSUtils.formatDouble(this.totalKcal(WEIGHT)) + " kcal"),
+		//Lager en datastruktur noe nærmere hva man hadde fått fra en ekte database + gjøres mer dynamisk;
+		String[][] data = {
+			{"Total Time", GPSUtils.formatTime(this.totalTime())},
+			{"Total distance", GPSUtils.formatDouble(this.totalDistance()) + " km"},
+			{"Total elevation",GPSUtils.formatDouble(this.totalElevation()) + " m" },
+			{"Max speed", GPSUtils.formatDouble(this.maxSpeed()) + " km/t"},
+			{"Average speed", GPSUtils.formatDouble(this.averageSpeed()) + " km/t"},
+			{"Energy", GPSUtils.formatDouble(this.totalKcal(WEIGHT)) + " kcal"}
 		};
+		
+		String[] stats = new String[data.length];
+		
+		int spacing = 3;
+		
+		int lDesc = data[0][0].length();
+		int lData = data[0][1].length();
+		
+		for (String[] stat : data) {
+			lDesc = stat[0].length() > lDesc ? stat[0].length() : lDesc;
+			lData = stat[1].length() > lData ? stat[1].length() : lData;
+		}
+		
+		for (int i = 0; i < data.length; i++) {
+			//formats label and string to fit its longest counterpart + 3 spacing;
+			String labelString = String.format("%-" + (lDesc + spacing) + "s", data[i][0]);
+			String dataString = String.format("%" + (lData + spacing) + "s", data[i][1]);
+			
+			
+			stats[i] = labelString + ":" + dataString;
+		}
 		
 		return stats;
 	}
